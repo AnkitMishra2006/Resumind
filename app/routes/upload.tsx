@@ -4,8 +4,25 @@ import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { useNavigate } from "react-router";
 import { convertPdfToImage } from "~/lib/pdf2img";
-import { generateUUID } from "~/lib/utils";
+import { generateUUID, sanitizeInput, validateFileType, validateFileSize } from "~/lib/utils";
 import { prepareInstructions } from "../../constants";
+import type { Route } from "./+types/upload";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Upload Resume for AI Analysis - Get Instant ATS Score | Resumind" },
+    { 
+      name: "description", 
+      content: "Upload your resume to get instant AI-powered feedback, ATS compatibility score, and personalized improvement tips. Free resume analysis with detailed recommendations." 
+    },
+    { name: "keywords", content: "upload resume, AI resume analysis, ATS score checker, resume feedback, job application optimizer, career tools" },
+    { property: "og:title", content: "Upload Your Resume for AI Analysis | Resumind" },
+    { property: "og:description", content: "Get instant AI feedback and ATS scores for your resume. Upload now for personalized improvement recommendations." },
+    { property: "og:url", content: "https://resumind.com/upload" },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ];
+}
 
 const Upload = () => {
   const { auth, isLoading, fs, ai, kv } = usePuterStore();
@@ -13,6 +30,12 @@ const Upload = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusText, setStatusText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
+  // Authentication guard
+  if (!isLoading && !auth.isAuthenticated) {
+    navigate("/auth?next=/upload");
+    return null;
+  }
 
   const handleFileSelect = (file: File | null) => {
     setFile(file);
@@ -70,10 +93,15 @@ const Upload = () => {
         ? feedback.message.content
         : feedback.message.content[0].text;
 
-    data.feedback = JSON.parse(feedbackText);
+    try {
+      data.feedback = JSON.parse(feedbackText);
+    } catch (error) {
+      console.error("Failed to parse AI feedback:", error);
+      return setStatusText("Error: Invalid response from AI analysis");
+    }
+    
     await kv.set(`resume:${uuid}`, JSON.stringify(data));
     setStatusText("Analysis complete, redirecting...");
-    console.log(data);
     navigate(`/resume/${uuid}`);
   };
 
@@ -87,9 +115,45 @@ const Upload = () => {
     const jobTitle = formData.get("job-title") as string;
     const jobDescription = formData.get("job-description") as string;
 
-    if (!file) return;
+    // Input validation and sanitization
+    if (!companyName?.trim() || companyName.length > 100) {
+      setStatusText("Error: Company name is required and must be less than 100 characters");
+      return;
+    }
+    if (!jobTitle?.trim() || jobTitle.length > 100) {
+      setStatusText("Error: Job title is required and must be less than 100 characters");
+      return;
+    }
+    if (!jobDescription?.trim() || jobDescription.length > 5000) {
+      setStatusText("Error: Job description is required and must be less than 5000 characters");
+      return;
+    }
+    if (!file) {
+      setStatusText("Error: Please select a PDF file");
+      return;
+    }
+    
+    // File validation
+    if (!validateFileType(file)) {
+      setStatusText("Error: Only PDF files are allowed");
+      return;
+    }
+    if (!validateFileSize(file)) {
+      setStatusText("Error: File size must be less than 20MB");
+      return;
+    }
 
-    handleAnalyze({ companyName, jobTitle, jobDescription, file });
+    // Sanitize inputs
+    const sanitizedCompanyName = sanitizeInput(companyName);
+    const sanitizedJobTitle = sanitizeInput(jobTitle);
+    const sanitizedJobDescription = sanitizeInput(jobDescription);
+
+    handleAnalyze({ 
+      companyName: sanitizedCompanyName, 
+      jobTitle: sanitizedJobTitle, 
+      jobDescription: sanitizedJobDescription, 
+      file 
+    });
   };
 
   return (
@@ -120,6 +184,8 @@ const Upload = () => {
                   name="company-name"
                   placeholder="Company Name"
                   id="company-name"
+                  maxLength={100}
+                  required
                 />
               </div>
               <div className="form-div">
@@ -129,6 +195,8 @@ const Upload = () => {
                   name="job-title"
                   placeholder="Job Title"
                   id="job-title"
+                  maxLength={100}
+                  required
                 />
               </div>
               <div className="form-div">
@@ -138,6 +206,8 @@ const Upload = () => {
                   name="job-description"
                   placeholder="Job Description"
                   id="job-description"
+                  maxLength={5000}
+                  required
                 />
               </div>
 

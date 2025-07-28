@@ -2,12 +2,17 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 export const meta = () => {
-  [
-    { title: "Resumind | Auth" },
+  return [
+    { title: "Login & Signup - Access Your Resume Analysis | Resumind" },
     {
       name: "description",
-      content: "Login or Signup to access your resumes and AI feedback.",
+      content: "Sign in to Resumind to access your personalized resume analysis, ATS scores, and AI-powered feedback. Create an account to start optimizing your resumes today.",
     },
+    { name: "keywords", content: "resume login, signup, account access, resume analysis login, career tools authentication" },
+    { property: "og:title", content: "Login to Resumind - Access Your Resume Analysis" },
+    { property: "og:description", content: "Sign in to access your personalized resume analysis and AI feedback." },
+    { property: "og:url", content: "https://resumind.com/auth" },
+    { name: "robots", content: "noindex, nofollow" }, // Auth pages should not be indexed
   ];
 };
 

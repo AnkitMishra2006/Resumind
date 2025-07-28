@@ -6,8 +6,13 @@ import ATS from "~/components/ATS";
 import Details from "~/components/Details";
 
 export const meta = () => [
-  { title: "Resumind | Review " },
-  { name: "description", content: "Detailed overview of your resume" },
+  { title: "Resume Analysis Results - AI Feedback & ATS Score | Resumind" },
+  { name: "description", content: "View detailed AI analysis of your resume including ATS compatibility score, content feedback, structure recommendations, and improvement tips." },
+  { name: "keywords", content: "resume analysis results, ATS score, AI feedback, resume review, career improvement" },
+  { property: "og:title", content: "Resume Analysis Results | Resumind" },
+  { property: "og:description", content: "Detailed AI-powered analysis of your resume with actionable improvement recommendations." },
+  { property: "og:type", content: "article" },
+  { name: "robots", content: "noindex, nofollow" }, // Individual results should not be indexed
 ];
 
 const Resume = () => {

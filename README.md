@@ -1,87 +1,74 @@
-# Welcome to React Router!
 
-A modern, production-ready template for building full-stack React applications using React Router.
+# Resumind
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Resumind is a smart resume analysis web application that provides AI-powered feedback for job seekers. It evaluates uploaded resumes based on multiple factors like tone, content, structure, and skills, and presents an overall score along with detailed improvement tips.
 
-## Features
+## 🌟 Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- ✨ Resume upload with drag-and-drop support
+- 📊 ATS score visualization
+- 📈 Overall and category-based scoring
+- 🧠 AI feedback and improvement suggestions
+- 🔐 Authentication and personalized dashboard
+- 🖼 Resume preview with image and download link
 
-## Getting Started
+## 🛠 Tech Stack
+
+- **Frontend:** React (with TypeScript), Tailwind CSS
+- **Backend/AI services:** Puter.js for auth, file system, and AI services
+- **Routing:** React Router
+- **PDF Rendering:** pdfjs-dist for converting resume PDF to image
+- **State Management:** Zustand
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- pnpm (or npm/yarn)
 
 ### Installation
 
-Install the dependencies:
-
 ```bash
-npm install
+pnpm install
 ```
 
 ### Development
 
-Start the development server with HMR:
+```bash
+pnpm dev
+```
+
+### Production
 
 ```bash
-npm run dev
+pnpm build
+pnpm preview
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## 📂 Project Structure
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+app/
+  components/       # UI components (ATS Score, Summary, Accordion, etc.)
+  routes/           # Route-based pages (upload, resume, home)
+  lib/              # Utility functions and Puter API integration
+  app.css           # Global Tailwind styles and theme customizations
+public/
+  icons/            # Icons for feedback visuals
+  images/           # Background and asset images
 ```
 
-## Styling
+## 📦 Deployment
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+The app can be containerized using the included `Dockerfile`. It uses Vite for build tooling and Puter APIs for resume feedback logic.
+
+## 🙏 Acknowledgements
+
+- [Puter](https://puter.com/) for cloud-based auth, file system, and AI services.
+- [pdfjs-dist](https://github.com/mozilla/pdf.js/) for PDF to image rendering.
+- Tailwind CSS and React ecosystem.
 
 ---
 
-Built with ❤️ using React Router.
+Made with ❤️ for smarter resume reviews.
